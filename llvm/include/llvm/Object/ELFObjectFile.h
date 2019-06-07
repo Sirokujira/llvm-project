@@ -83,6 +83,8 @@ public:
 
   SubtargetFeatures getRISCVFeatures() const;
 
+  SubtargetFeatures getRXFeatures() const;   // <- ’Ç‰Á•”•ª
+
   void setARMSubArch(Triple &TheTriple) const override;
 
   virtual uint16_t getEType() const = 0;
@@ -1044,6 +1046,8 @@ StringRef ELFObjectFile<ELFT>::getFileFormatName() const {
       return "ELF32-ppc";
     case ELF::EM_RISCV:
       return "ELF32-riscv";
+    case ELF::EM_RX:
+      return "ELF32-rx";
     case ELF::EM_SPARC:
     case ELF::EM_SPARC32PLUS:
       return "ELF32-sparc";
@@ -1125,6 +1129,8 @@ template <class ELFT> Triple::ArchType ELFObjectFile<ELFT>::getArch() const {
     default:
       report_fatal_error("Invalid ELFCLASS!");
     }
+  case ELF::EM_RX:
+    return Triple::rx;
   case ELF::EM_S390:
     return Triple::systemz;
 

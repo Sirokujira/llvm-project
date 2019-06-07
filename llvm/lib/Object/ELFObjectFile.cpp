@@ -251,6 +251,17 @@ SubtargetFeatures ELFObjectFileBase::getRISCVFeatures() const {
   return Features;
 }
 
+SubtargetFeatures ELFObjectFileBase::getRXFeatures() const { // <- ’Ç‰Á•”•ª
+   SubtargetFeatures Features;
+   unsigned PlatformFlags = getPlatformFlags();
+
+  if (PlatformFlags & ELF::EF_RX_RVC) {
+    Features.AddFeature("c");
+  }
+
+  return Features;
+}
+
 SubtargetFeatures ELFObjectFileBase::getFeatures() const {
   switch (getEMachine()) {
   case ELF::EM_MIPS:
@@ -259,6 +270,8 @@ SubtargetFeatures ELFObjectFileBase::getFeatures() const {
     return getARMFeatures();
   case ELF::EM_RISCV:
     return getRISCVFeatures();
+  case ELF::EM_RX:              // <- ’Ç‰Á•”•ª
+    return getRXFeatures();
   default:
     return SubtargetFeatures();
   }

@@ -1,0 +1,227 @@
+diff --git a/llvm/CMakeLists.txt b/llvm/CMakeLists.txt
+index 27754f33949..0421245ba5f 100644
+--- a/llvm/CMakeLists.txt
++++ b/llvm/CMakeLists.txt
+@@ -299,6 +299,7 @@ set(LLVM_ALL_TARGETS
+   WebAssembly
+   X86
+   XCore
++  RX # <-- ’Ç‰Á•”•ª
+   )
+ 
+ # List of targets with JIT support:
+diff --git a/llvm/cmake/config-ix.cmake b/llvm/cmake/config-ix.cmake
+index 900c35ee4f0..04adc85316b 100644
+--- a/llvm/cmake/config-ix.cmake
++++ b/llvm/cmake/config-ix.cmake
+@@ -410,6 +410,8 @@ elseif (LLVM_NATIVE_ARCH MATCHES "riscv32")
+   set(LLVM_NATIVE_ARCH RISCV)
+ elseif (LLVM_NATIVE_ARCH MATCHES "riscv64")
+   set(LLVM_NATIVE_ARCH RISCV)
++elseif (LLVM_NATIVE_ARCH MATCHES "rx") # <- ’Ç‰Á•”•ª
++  set(LLVM_NATIVE_ARCH RX)
+ else ()
+   message(FATAL_ERROR "Unknown architecture ${LLVM_NATIVE_ARCH}")
+ endif ()
+diff --git a/llvm/include/llvm/ADT/Triple.h b/llvm/include/llvm/ADT/Triple.h
+index e06a68e2731..c66ee80cdf7 100644
+--- a/llvm/include/llvm/ADT/Triple.h
++++ b/llvm/include/llvm/ADT/Triple.h
+@@ -67,6 +67,7 @@ public:
+     amdgcn,         // AMDGCN: AMD GCN GPUs
+     riscv32,        // RISC-V (32-bit): riscv32
+     riscv64,        // RISC-V (64-bit): riscv64
++    rx,             // RX (32-bit): rx
+     sparc,          // Sparc: sparc
+     sparcv9,        // Sparcv9: Sparcv9
+     sparcel,        // Sparc: (endianness = little). NB: 'Sparcle' is a CPU variant
+diff --git a/llvm/include/llvm/BinaryFormat/ELF.h b/llvm/include/llvm/BinaryFormat/ELF.h
+index ce35d127d43..f568b113e37 100644
+--- a/llvm/include/llvm/BinaryFormat/ELF.h
++++ b/llvm/include/llvm/BinaryFormat/ELF.h
+@@ -633,6 +633,22 @@ enum {
+ #include "ELFRelocs/RISCV.def"
+ };
+ 
++// RX Specific e_flags
++enum : unsigned {
++  EF_RX_RVC = 0x0001,
++  EF_RX_FLOAT_ABI = 0x0006,
++  EF_RX_FLOAT_ABI_SOFT = 0x0000,
++  EF_RX_FLOAT_ABI_SINGLE = 0x0002,
++  EF_RX_FLOAT_ABI_DOUBLE = 0x0004,
++  EF_RX_FLOAT_ABI_QUAD = 0x0006,
++  EF_RX_RVE = 0x0008
++};
++
++// ELF Relocation types for RX
++enum {
++  #include "ELFRelocs/RX.def"
++};
++
+ // ELF Relocation types for S390/zSeries
+ enum {
+ #include "ELFRelocs/SystemZ.def"
+diff --git a/llvm/include/llvm/Object/ELFObjectFile.h b/llvm/include/llvm/Object/ELFObjectFile.h
+index 0f620681cd9..ad1525f6696 100644
+--- a/llvm/include/llvm/Object/ELFObjectFile.h
++++ b/llvm/include/llvm/Object/ELFObjectFile.h
+@@ -83,6 +83,8 @@ public:
+ 
+   SubtargetFeatures getRISCVFeatures() const;
+ 
++  SubtargetFeatures getRXFeatures() const;   // <- ’Ç‰Á•”•ª
++
+   void setARMSubArch(Triple &TheTriple) const override;
+ 
+   virtual uint16_t getEType() const = 0;
+@@ -1044,6 +1046,8 @@ StringRef ELFObjectFile<ELFT>::getFileFormatName() const {
+       return "ELF32-ppc";
+     case ELF::EM_RISCV:
+       return "ELF32-riscv";
++    case ELF::EM_RX:
++      return "ELF32-rx";
+     case ELF::EM_SPARC:
+     case ELF::EM_SPARC32PLUS:
+       return "ELF32-sparc";
+@@ -1125,6 +1129,8 @@ template <class ELFT> Triple::ArchType ELFObjectFile<ELFT>::getArch() const {
+     default:
+       report_fatal_error("Invalid ELFCLASS!");
+     }
++  case ELF::EM_RX:
++    return Triple::rx;
+   case ELF::EM_S390:
+     return Triple::systemz;
+ 
+diff --git a/llvm/include/llvm/module.modulemap b/llvm/include/llvm/module.modulemap
+index bcc12534ec8..4a1f8d2ed59 100644
+--- a/llvm/include/llvm/module.modulemap
++++ b/llvm/include/llvm/module.modulemap
+@@ -67,6 +67,7 @@ module LLVM_BinaryFormat {
+     textual header "BinaryFormat/ELFRelocs/PowerPC64.def"
+     textual header "BinaryFormat/ELFRelocs/PowerPC.def"
+     textual header "BinaryFormat/ELFRelocs/RISCV.def"
++    textual header "BinaryFormat/ELFRelocs/RX.def"
+     textual header "BinaryFormat/ELFRelocs/Sparc.def"
+     textual header "BinaryFormat/ELFRelocs/SystemZ.def"
+     textual header "BinaryFormat/ELFRelocs/x86_64.def"
+diff --git a/llvm/lib/Object/ELFObjectFile.cpp b/llvm/lib/Object/ELFObjectFile.cpp
+index 9fb3a55ac7b..bb46bfbf8a7 100644
+--- a/llvm/lib/Object/ELFObjectFile.cpp
++++ b/llvm/lib/Object/ELFObjectFile.cpp
+@@ -251,6 +251,17 @@ SubtargetFeatures ELFObjectFileBase::getRISCVFeatures() const {
+   return Features;
+ }
+ 
++SubtargetFeatures ELFObjectFileBase::getRXFeatures() const { // <- ’Ç‰Á•”•ª
++   SubtargetFeatures Features;
++   unsigned PlatformFlags = getPlatformFlags();
++
++  if (PlatformFlags & ELF::EF_RX_RVC) {
++    Features.AddFeature("c");
++  }
++
++  return Features;
++}
++
+ SubtargetFeatures ELFObjectFileBase::getFeatures() const {
+   switch (getEMachine()) {
+   case ELF::EM_MIPS:
+@@ -259,6 +270,8 @@ SubtargetFeatures ELFObjectFileBase::getFeatures() const {
+     return getARMFeatures();
+   case ELF::EM_RISCV:
+     return getRISCVFeatures();
++  case ELF::EM_RX:              // <- ’Ç‰Á•”•ª
++    return getRXFeatures();
+   default:
+     return SubtargetFeatures();
+   }
+diff --git a/llvm/lib/Support/Triple.cpp b/llvm/lib/Support/Triple.cpp
+index 26d9327f620..f3c9c895a61 100644
+--- a/llvm/lib/Support/Triple.cpp
++++ b/llvm/lib/Support/Triple.cpp
+@@ -42,6 +42,7 @@ StringRef Triple::getArchTypeName(ArchType Kind) {
+   case amdgcn:         return "amdgcn";
+   case riscv32:        return "riscv32";
+   case riscv64:        return "riscv64";
++  case rx:             return "rx";
+   case sparc:          return "sparc";
+   case sparcv9:        return "sparcv9";
+   case sparcel:        return "sparcel";
+@@ -143,6 +144,8 @@ StringRef Triple::getArchTypePrefix(ArchType Kind) {
+ 
+   case riscv32:
+   case riscv64:     return "riscv";
++  
++  case rx:          return "rx";
+   }
+ }
+ 
+@@ -279,6 +282,7 @@ Triple::ArchType Triple::getArchTypeForLLVMName(StringRef Name) {
+     .Case("amdgcn", amdgcn)
+     .Case("riscv32", riscv32)
+     .Case("riscv64", riscv64)
++    .Case("rx", rx)
+     .Case("hexagon", hexagon)
+     .Case("sparc", sparc)
+     .Case("sparcel", sparcel)
+@@ -409,6 +413,7 @@ static Triple::ArchType parseArch(StringRef ArchName) {
+     .Case("amdgcn", Triple::amdgcn)
+     .Case("riscv32", Triple::riscv32)
+     .Case("riscv64", Triple::riscv64)
++    .Case("rx", Triple::rx)
+     .Case("hexagon", Triple::hexagon)
+     .Cases("s390x", "systemz", Triple::systemz)
+     .Case("sparc", Triple::sparc)
+@@ -670,6 +675,7 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
+   case Triple::renderscript64:
+   case Triple::riscv32:
+   case Triple::riscv64:
++  case Triple::rx:
+   case Triple::shave:
+   case Triple::sparc:
+   case Triple::sparcel:
+@@ -1223,6 +1229,7 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
+   case llvm::Triple::ppc:
+   case llvm::Triple::r600:
+   case llvm::Triple::riscv32:
++  case llvm::Triple::rx:
+   case llvm::Triple::sparc:
+   case llvm::Triple::sparcel:
+   case llvm::Triple::tce:
+@@ -1307,6 +1314,7 @@ Triple Triple::get32BitArchVariant() const {
+   case Triple::ppc:
+   case Triple::r600:
+   case Triple::riscv32:
++  case Triple::rx:
+   case Triple::sparc:
+   case Triple::sparcel:
+   case Triple::tce:
+@@ -1427,6 +1435,7 @@ Triple Triple::getBigEndianArchVariant() const {
+   case Triple::r600:
+   case Triple::riscv32:
+   case Triple::riscv64:
++  case Triple::rx:
+   case Triple::shave:
+   case Triple::spir64:
+   case Triple::spir:
+@@ -1514,6 +1523,7 @@ bool Triple::isLittleEndian() const {
+   case Triple::r600:
+   case Triple::riscv32:
+   case Triple::riscv64:
++  case Triple::rx:
+   case Triple::shave:
+   case Triple::sparcel:
+   case Triple::spir64:
+diff --git a/llvm/lib/Target/LLVMBuild.txt b/llvm/lib/Target/LLVMBuild.txt
+index 0ed7e9f854d..f52a26a4c87 100644
+--- a/llvm/lib/Target/LLVMBuild.txt
++++ b/llvm/lib/Target/LLVMBuild.txt
+@@ -32,6 +32,7 @@ subdirectories =
+  Mips
+  PowerPC
+  RISCV
++ RX
+  Sparc
+  SystemZ
+  WebAssembly

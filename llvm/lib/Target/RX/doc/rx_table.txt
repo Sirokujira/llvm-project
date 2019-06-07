@@ -1,0 +1,104 @@
+レジスタの表示?
+
+http://tool-support.renesas.com/autoupdate/support/onlinehelp/csp/V5.00.00/CS+.chm/DebugTool-RX.chm/Output/db_P_cpu_reg.html
+
+RX_Operand_None, 
+RX_Operand_Immediate,	/* #addend */ 
+RX_Operand_Register,	/* Rn */ 
+RX_Operand_Indirect,	/* [Rn + addend] */ 
+RX_Operand_Postinc,	/* [Rn+] */ 
+RX_Operand_Predec,	/* [-Rn] */ 
+RX_Operand_Condition,	/* eq, gtu, etc */ 
+RX_Operand_Flag,	/* [UIOSZC] */ 
+RX_Operand_TwoReg,	/* [Rn + scale*R2] */ 
+RX_Operand_Type; 
+
+---
+
+OPC_UNKNOWN     : RXOpcode<0b0000000>;  
+OPC_MOV         : RXOpcode<0b0000001>;      /* d = s (signed) */ 
+OPC_MOVBI       : RXOpcode<0b0000010>;      /* d = [s,s2] (signed) */ 
+OPC_MOVBIR      : RXOpcode<0b0000100>;      /* [s,s2] = d (signed) */ 
+OPC_PUSHM       : RXOpcode<0b0000101>;      /* s..s2 */ 
+OPC_POPM        : RXOpcode<0b0000110>;      /* s..s2 */ 
+OPC_XCHG        : RXOpcode<0b0000111>;      /* s <-> d */ 
+OPC_STCC        : RXOpcode<0b0001000>;      /* d = s if cond(s2) */ 
+OPC_RTSD        : RXOpcode<0b0001001>;      /* rtsd, 1=imm, 2-0 = reg if reg type */ 
+                                            /* These are all either d OP= s or, if s2 is set , d = s OP s2.  Note that d may be "None".  */ 
+OPC_AND         : RXOpcode<0b0001010>; 
+OPC_OR          : RXOpcode<0b0001011>; 
+OPC_XOR         : RXOpcode<0b0001100>; 
+OPC_ADD         : RXOpcode<0b0001101>; 
+OPC_SUB         : RXOpcode<0b0001110>; 
+OPC_MUL         : RXOpcode<0b0001111>; 
+OPC_DIV         : RXOpcode<0b0010000>; 
+OPC_DIVU        : RXOpcode<0b0010001>; 
+OPC_SHLL        : RXOpcode<0b0010010>; 
+OPC_SHAR        : RXOpcode<0b0010011>; 
+OPC_SHLR        : RXOpcode<0b0010100>; 
+OPC_ADC         : RXOpcode<0b0010101>;      /* d = d + s + carry */ 
+OPC_SBB         : RXOpcode<0b0010110>;      /* d = d - s - ~carry */ 
+OPC_ABS         : RXOpcode<0b0010111>;      /* d = |s| */ 
+OPC_MAX         : RXOpcode<0b0011000>;      /* d = max(d,s) */ 
+OPC_MIN         : RXOpcode<0b0011001>;      /* d = min(d,s) */ 
+OPC_EMUL        : RXOpcode<0b0011010>;      /* d:64 = d:32 * s */ 
+OPC_EMULU       : RXOpcode<0b0011011>;      /* d:64 = d:32 * s (unsigned) */ 
+OPC_ROLC        : RXOpcode<0b0011100>;      /* d <<= 1 through carry */ 
+OPC_RORC        : RXOpcode<0b0011101>;      /* d >>= 1 through carry*/ 
+OPC_ROTL        : RXOpcode<0b0011110>;      /* d <<= #s without carry */ 
+OPC_ROTR        : RXOpcode<0b0011111>;      /* d >>= #s without carry*/ 
+OPC_REVW        : RXOpcode<0b0100000>;      /* d = revw(s) */ 
+OPC_REVL        : RXOpcode<0b0100001>;      /* d = revl(s) */ 
+OPC_BRANCH      : RXOpcode<0b0100010>;      /* pc = d if cond(s) */ 
+OPC_BRANCHREL   : RXOpcode<0b0100011>;      /* pc += d if cond(s) */ 
+OPC_JSR         : RXOpcode<0b0100100>;      /* pc = d */ 
+OPC_JSRREL      : RXOpcode<0b0100101>;      /* pc += d */ 
+OPC_RTS         : RXOpcode<0b0100110>; 
+OPC_NOP         : RXOpcode<0b0100111>; 
+OPC_NOP2        : RXOpcode<0b0101000>; 
+OPC_NOP3        : RXOpcode<0b0101001>; 
+OPC_SCMPU       : RXOpcode<0b0101010>; 
+OPC_SMOVU       : RXOpcode<0b0101011>; 
+OPC_SMOVB       : RXOpcode<0b0101100>; 
+OPC_SUNTIL      : RXOpcode<0b0101101>; 
+OPC_SWHILE      : RXOpcode<0b0101110>; 
+OPC_SMOVF       : RXOpcode<0b0101111>; 
+OPC_SSTR        : RXOpcode<0b1000000>; 
+OPC_RMPA        : RXOpcode<0b1000001>; 
+OPC_MULHI       : RXOpcode<0b1000010>; 
+OPC_MULLO       : RXOpcode<0b1000011>; 
+OPC_MACHI       : RXOpcode<0b1000100>; 
+OPC_MACLO       : RXOpcode<0b1000101>; 
+OPC_MVTACHI     : RXOpcode<0b1000110>; 
+OPC_MVTACLO     : RXOpcode<0b1000111>; 
+OPC_MVFACHI     : RXOpcode<0b1001000>; 
+OPC_MVFACMI     : RXOpcode<0b1001001>; 
+OPC_MVFACLO     : RXOpcode<0b1001010>; 
+OPC_RACW        : RXOpcode<0b1001011>; 
+OPC_SAT         : RXOpcode<0b1001100>;      /* sat(d) */ 
+OPC_SATR        : RXOpcode<0b1001101>; 
+OPC_FADD        : RXOpcode<0b1001110>;      /* d op= s */ 
+OPC_FCMP        : RXOpcode<0b1001111>; 
+OPC_FSUB        : RXOpcode<0b1010000>; 
+OPC_FTOI        : RXOpcode<0b1010001>; 
+OPC_FMUL        : RXOpcode<0b1010010>; 
+OPC_FDIV        : RXOpcode<0b1010101>; 
+OPC_ROUND       : RXOpcode<0b1010110>; 
+OPC_ITOF        : RXOpcode<0b1010111>; 
+OPC_BSET        : RXOpcode<0b1011000>;      /* d |= (1<<s) */ 
+OPC_BCLR        : RXOpcode<0b1011001>;      /* d &= ~(1<<s) */ 
+OPC_BTST        : RXOpcode<0b1011010>;      /* s & (1<<s2) */ 
+OPC_BNOT        : RXOpcode<0b1011011>;      /* d ^= (1<<s) */ 
+OPC_BMCC        : RXOpcode<0b1011100>;      /* d<s> = cond(s2) */ 
+OPC_CLRPSW      : RXOpcode<0b1011101>;      /* flag index in d */ 
+OPC_SETPSW      : RXOpcode<0b1011110>;      /* flag index in d */ 
+OPC_MVTIPL      : RXOpcode<0b1011111>;      /* new IPL in s */ 
+OPC_RTFI        : RXOpcode<0b1100000>; 
+OPC_RTE         : RXOpcode<0b1100001>; 
+OPC_RTD         : RXOpcode<0b1100010>;      /* undocumented */ 
+OPC_BRK         : RXOpcode<0b1100011>; 
+OPC_DBT         : RXOpcode<0b1100100>;      /* undocumented */ 
+OPC_INT         : RXOpcode<0b1100101>;      /* vector id in s */ 
+OPC_STOP        : RXOpcode<0b1100110>; 
+OPC_WAIT        : RXOpcode<0b1100011>; 
+OPC_SCCND       : RXOpcode<0b1100011>;      /* d = cond(s) ? 1 : 0 */ 

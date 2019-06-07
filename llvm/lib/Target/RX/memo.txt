@@ -1,0 +1,138 @@
+https://stackoverflow.com/questions/46905464/how-to-enable-a-llvm-backend/46908816#46908816
+※ LLVM_TARGETS_TO_BUILD は安定版
+※ LLVM_EXPERIMENTAL_TARGETS_TO_BUILD は開発用?
+
+GPR : 整数汎用レジスタ
+FPR : 浮動小数汎用レジスタ
+
+td の定義には気を付ける
+コメントを {} 内に入れない etc.
+
+---
+
+カスタムの llvm を使って compiler-rt をビルドする場合の手順?
+https://compiler-rt.llvm.org/
+https://llvm.org/docs/HowToCrossCompileBuiltinsOnArm.html
+
+cd llvm-project
+mkdir build-compiler-rt
+cd build-compiler-rt
+cmake ../compiler-rt -DLLVM_CONFIG_PATH=/path/to/llvm-config
+make
+
+cmake .. -G"Visual Studio 15 2017 Win64" -Thost="x64" -DCMAKE_BUILD_TYPE="Debug" -DLLVM_CONFIG_PATH="E:/llvm-project/llvm/llvm-riscv/Debug/bin/llvm-config.exe" ..
+cmake --build .
+
+cmake ..
+-G"Ninja"
+-DCOMPILER_RT_BUILD_BUILTINS=ON
+-DCOMPILER_RT_BUILD_SANITIZERS=OFF
+-DCOMPILER_RT_BUILD_XRAY=OFF
+-DCOMPILER_RT_BUILD_LIBFUZZER=OFF
+-DCOMPILER_RT_BUILD_PROFILE=OFF
+-DCMAKE_C_COMPILER=/path/to/clang
+-DCMAKE_AR=/path/to/llvm-ar
+-DCMAKE_NM=/path/to/llvm-nm
+-DCMAKE_RANLIB=/path/to/llvm-ranlib
+-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
+-DCMAKE_C_COMPILER_TARGET="arm-linux-gnueabihf"
+-DCMAKE_ASM_COMPILER_TARGET="arm-linux-gnueabihf"
+-DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON
+-DLLVM_CONFIG_PATH=/path/to/llvm-config
+-DCMAKE_C_FLAGS="build-c-flags"
+-DCMAKE_ASM_FLAGS="build-c-flags"
+※ arm 
+
+CMakeLists.txt 修正?
+https://reviews.llvm.org/D58767
+
+foreach(var_to_update
+    CMAKE_CXX_FLAGS
+    CMAKE_CXX_FLAGS_DEBUG
+    CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+    string(REGEX REPLACE "(^| )/Z[i7I]($| )" " /Z7 "
+           "${var_to_update}" "${${var_to_update}}")
+  endforeach()
+
+---
+
+CC-RXでvolatile指定有り__evenaccess指定無しのobjectへのaccess sizeが保証されないのは言語規格上妥当なのかな？
+https://japan.renesasrulz.com/cafe_rene/f/forum5/5094/cc-rx-volatile-__evenaccess-object-access-size
+http://mcommit.hatenadiary.com/entry/2016/01/06/001929
+
+
+http://embeddedsystems.io/mixing-assembly-c-cc-rx/
+https://github.com/fabiopjve/RX/tree/master/Assembly_Sort
+
+http://www.cosmicsoftware.com/pdf/RX.pdf
+
+CC-RX リリースノート
+http://tool-support.renesas.com/autoupdate/support/jpn/cs_plus/CC-RX_List.html
+
+FAQ 1010584 : CS+環境でE1/E20使用時のノウハウ集
+https://ja-support.renesas.com/knowledgeBase/17796210
+
+
+http://www.tokudenkairo.co.jp/rx/e1.html
+
+---
+
+for not yet implemented instructionsor pseudo-instructions
+
+for instructions with a fixed opcode value
+
+for instructions that have one register operand added to their opcode
+
+for instructions that use the Mod/RM byte to specify a destination 
+(register)
+
+for instructions that use the Mod/RM byte to specify a destination (memory)
+
+for instructions that use the Mod/RM byte to specify a source (register)
+
+for instructions that use the Mod/RM byte to specify a source (memory)
+
+for instructions that operate on a REGISTER r/m operand and 
+use the Mod/RM byte and a field to hold extended opcode data
+
+for instructions that operate on a MEMORY r/m operand and 
+use the Mod/RM byte and a field to hold extended opcode data
+
+for instructions whose source anddestination are the same register
+
+---
+
+まだ実装されていない命令または疑似命令の場合
+Pseudo
+
+オペコード値が固定されている命令の場合
+RawFrm
+
+オペコードに1つのレジスタオペランドが追加されている命令の場合
+AddRegFrm
+
+宛先を指定するためにMod / RMバイトを使用する命令の場合（登録）
+MRMDestReg
+
+宛先（メモリ）を指定するためにMod / RMバイトを使用する命令用
+MRMDestMem
+
+Mod / RMバイトを使用してソース（レジスタ）を指定する命令用
+MRMSrcReg
+
+ソース（メモリ）を指定するためにMod / RMバイトを使用する命令用
+MRMSrcMem
+
+REGISTER r/mオペランドを操作し、Mod / RMバイトと拡張オペコードデータを保持するフィールドを使用する命令の場合
+MRM0r
+
+MEMORY r/mオペランドを操作する命令の場合
+拡張オペコードデータを保持するためにMod / RMバイトとフィールドを使用する
+MRM0m
+
+ソースとデスティネーションが同じレジスタの命令用
+MRMInitReg
+
+ディスプレースメントについて
+https://ja.wikipedia.org/wiki/%E3%82%A2%E3%83%89%E3%83%AC%E3%83%83%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%A2%E3%83%BC%E3%83%89#CISCの例
+
