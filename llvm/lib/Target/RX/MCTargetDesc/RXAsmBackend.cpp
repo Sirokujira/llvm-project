@@ -74,24 +74,65 @@ public:
     return RX::NumTargetFixupKinds;
   }
 
+  // デフォルトの include\llvm\MC\MCFixup.h で定義している項目以外の
   const MCFixupKindInfo &getFixupKindInfo(MCFixupKind Kind) const override {
     const static MCFixupKindInfo Infos[] = {
       // This table *must* be in the order that the fixup_* kinds are defined in
       // RXFixupKinds.h.
       //
       // name                      offset bits  flags
-      { "fixup_rx_hi20",         12,     20,  0 },
-      { "fixup_rx_lo12_i",       20,     12,  0 },
-      { "fixup_rx_lo12_s",        0,     32,  0 },
-      { "fixup_rx_pcrel_hi20",   12,     20,  MCFixupKindInfo::FKF_IsPCRel },
-      { "fixup_rx_pcrel_lo12_i", 20,     12,  MCFixupKindInfo::FKF_IsPCRel },
-      { "fixup_rx_pcrel_lo12_s",  0,     32,  MCFixupKindInfo::FKF_IsPCRel },
-      { "fixup_rx_jal",          12,     20,  MCFixupKindInfo::FKF_IsPCRel },
-      { "fixup_rx_branch",        0,     32,  MCFixupKindInfo::FKF_IsPCRel },
-      { "fixup_rx_rvc_jump",      2,     11,  MCFixupKindInfo::FKF_IsPCRel },
-      { "fixup_rx_rvc_branch",    0,     16,  MCFixupKindInfo::FKF_IsPCRel },
-      { "fixup_rx_call",          0,     64,  MCFixupKindInfo::FKF_IsPCRel },
-      { "fixup_rx_relax",         0,      0,  0 }
+      { "fixup_rx_data_24",        0,     24,   0 },
+      { "fixup_rx_pcrel_24",       0,     24,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_dir3u_pcrel",    0,      3,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_16_op0",      0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_24_op",       0,     24,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_32_op",       0,     32,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_24_uns",      0,     24,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_8_neg",       0,      8,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_16_neg",      0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_24_neg",      0,     24,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_32_neg",      0,     32,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_diff",        0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_gprelb",      0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_gprelw",      0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rh_gprell",      0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs32",          0,     32,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs24s",         0,     24,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs16",          0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs16u",         0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs16s",         0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs8",           0,      8,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs8u",          0,      8,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs8s",          0,      8,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs16ul",        0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs16uw",        0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs8ul",         0,      8,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs8uw",         0,      8,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs32_rev",      0,     32,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_abs16_rev",      0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_sym",            0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opneg",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opadd",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opsub",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opmul",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opdiv",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opshla",         0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opshra",         0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opsctsize",      0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opscttop",       0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opand",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opor",           0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opxor",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opnot",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opmod",          0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opromtop",       0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_opramtop",       0,      0,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_jal",           12,     20,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_branch",         0,     32,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rvc_jump",       2,     11,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_rvc_branch",     0,     16,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_call",           0,     64,   MCFixupKindInfo::FKF_IsPCRel },
+      { "fixup_rx_relax",          0,      0,   0 },
     };
     static_assert((array_lengthof(Infos)) == RX::NumTargetFixupKinds,
                   "Not all fixup kinds added to Infos array");
@@ -217,6 +258,7 @@ static uint64_t adjustFixupValue(const MCFixup &Fixup, uint64_t Value,
     llvm_unreachable("Unknown fixup kind!");
   case FK_Data_1:
   case FK_Data_2:
+  case RX::fixup_rx_data_24:
   case FK_Data_4:
   case FK_Data_8:
     return Value;

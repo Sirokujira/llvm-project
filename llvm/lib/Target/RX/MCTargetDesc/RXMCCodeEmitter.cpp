@@ -205,19 +205,6 @@ unsigned RXMCCodeEmitter::getImmOpValue(const MCInst &MI, unsigned OpNo,
     case RXMCExpr::VK_RX_None:
     case RXMCExpr::VK_RX_Invalid:
       llvm_unreachable("Unhandled fixup kind!");
-    case RXMCExpr::VK_RX_LO:
-      llvm_unreachable("VK_RX_LO used with unexpected instruction format");
-      break;
-    case RXMCExpr::VK_RX_HI:
-      FixupKind = RX::fixup_rx_hi20;
-      break;
-    case RXMCExpr::VK_RX_PCREL_LO:
-      llvm_unreachable(
-            "VK_RX_PCREL_LO used with unexpected instruction format");
-      break;
-    case RXMCExpr::VK_RX_PCREL_HI:
-      FixupKind = RX::fixup_rx_pcrel_hi20;
-      break;
     case RXMCExpr::VK_RX_CALL:
       FixupKind = RX::fixup_rx_call;
       break;
