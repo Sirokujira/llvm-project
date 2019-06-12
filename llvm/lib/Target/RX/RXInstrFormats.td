@@ -26,11 +26,11 @@
 //===----------------------------------------------------------------------===//
 
 // http://msyksphinz.hatenablog.com/entry/2019/01/23/040000
-// –½—ßƒ^ƒCƒv : RX ‚Ìê‡A–½—ßƒR[ƒh‚ÅƒoƒCƒg‚ª•Ï‚í‚é(‰Â•Ï’·)B
-// X86 “™‚ğQl‚É‹Lq‚·‚é
+// ï¿½ï¿½ï¿½ßƒ^ï¿½Cï¿½v : RX ï¿½Ìê‡ï¿½Aï¿½ï¿½ï¿½ßƒRï¿½[ï¿½hï¿½Åƒoï¿½Cï¿½gï¿½ï¿½ï¿½Ï‚ï¿½ï¿½(ï¿½Â•Ï’ï¿½)ï¿½B
+// X86 ï¿½ï¿½ï¿½ï¿½ï¿½Qï¿½lï¿½É‹Lï¿½qï¿½ï¿½ï¿½ï¿½
 // http://llvm.org/docs/WritingAnLLVMBackend.html
 // https://github.com/Broadcom/stblinux-2.6.37/tree/master/uclinux-rootfs/user/gdb/include/opcode/rx.h
-// ‚Ì RX_Operand_Type QÆ?
+// ï¿½ï¿½ RX_Operand_Type ï¿½Qï¿½ï¿½?
 // Format specifies the encoding used by the instruction. This is used by
 // RXMCCodeEmitter to determine which form of fixup to use. These
 // definitions must be kept in-sync with MCTargetDesc/RXBaseInfo.h.
@@ -39,21 +39,19 @@ class InstFormat<bits<5> val> {
 }
 def InstFormatPseudo        : InstFormat<0>;
 def InstFormatRawFrm        : InstFormat<1>;
-def InstFormatImmediate     : InstFormat<2>; /* #addend */ // addend?(immŒn?)(li ‚ª‘¶İ?)
+def InstFormatImmediate     : InstFormat<2>; /* #addend */ // addend?(immï¿½n?)(li ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?)
 def InstFormatRegister      : InstFormat<3>; /* Rn */ // Rs, Rd only?
 def InstFormatIndirect      : InstFormat<4>; /* [Rn + addend] */ // Rs, Rd + #Imm?, ADC, ADD?
 def InstFormatPostinc       : InstFormat<5>; /* [Rn+] */ // MOVU.size (4)
 def InstFormatPredec        : InstFormat<6>; /* [-Rn] */ // MOVU.size (4)
 def InstFormatCondition     : InstFormat<7>; /* eq, gtu, etc */ // BCnd/BMCnd or SCCnd
 def InstFormatFlag          : InstFormat<8>; /* [UIOSZC] */ // CLRPSW, SETPSW
-def InstFormatTwoReg        : InstFormat<9>; /* [Rn + scale*R2] */ // ‰ÁZAŒ¸Z??? Rd = R1 + R2?
+def InstFormatTwoReg        : InstFormat<9>; /* [Rn + scale*R2] */ // ï¿½ï¿½ï¿½Zï¿½Aï¿½ï¿½ï¿½Z??? Rd = R1 + R2?
 def InstFormatOther         : InstFormat<10>;
 
+// gdb ï¿½ï¿½ RX_Size ï¿½\ï¿½ï¿½ï¿½ÌQï¿½ï¿½
 
-// https://github.com/Broadcom/stblinux-2.6.37/tree/master/uclinux-rootfs/user/gdb/include/opcode/rx.h
-// ‚Ì RX_Size QÆ
-
-// cb[3:0] ‚É‰e‹¿‚·‚éƒtƒ‰ƒO
+// cb[3:0] ï¿½É‰eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½O
 class FlagType<bits<4> val> {
   bits<4> Value = val;
 }
@@ -65,11 +63,11 @@ def FlagI     : FlagType<8>;
 def FlagU     : FlagType<9>;
 
 
-// 2.2.1 IMM ”ÍˆÍ ‚ğƒ`ƒFƒbƒN
+// 2.2.1 IMM ï¿½Íˆï¿½ ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½N
 // ImmType - This specifies the immediate type used by an instruction. This is
 // part of the ad-hoc solution used to emit machine instruction encodings by our
 // machine code emitter.
-// li[1:0] ‚É‰e‹¿‚·‚éƒtƒ‰ƒO
+// li[1:0] ï¿½É‰eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½O
 class ImmType<bits<2> val> {
   bits<2> Value = val;
 }
@@ -88,7 +86,7 @@ def ImmIMM32      : ImmType<0>;
 // def UIMM8      : ImmType<7>;
 // def IMM16      : ImmType<0>;
 
-// ld[1:0] ‚É‰e‹¿‚·‚éƒtƒ‰ƒO
+// ld[1:0] ï¿½É‰eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½O
 class DspType<bits<2> val> {
   bits<2> Value = val;
 }
@@ -98,7 +96,7 @@ def Dsp16      : DspType<2>;
 def DspRs      : DspType<3>;
 def DspRd      : DspType<3>;
 
-// mi[1:0] ‚É‰e‹¿‚·‚éƒtƒ‰ƒO
+// mi[1:0] ï¿½É‰eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½O
 class MemexType<bits<2> val> {
   bits<2> Value = val;
 }
@@ -107,7 +105,7 @@ def MemexW     : MemexType<1>;
 def MemexL     : MemexType<2>;
 def MemexUW    : MemexType<3>;
 
-// sz[1:0] ‚É‰e‹¿‚·‚éƒtƒ‰ƒO
+// sz[1:0] ï¿½É‰eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½O
 class SizeType<bits<2> val> {
   bits<2> Value = val;
 }
@@ -116,7 +114,7 @@ def SizeW     : SizeType<1>;
 def SizeL     : SizeType<2>;
 
 // Condition bitpatterns, as registers. 
-// cr[1:0] ‚É‰e‹¿‚·‚éƒtƒ‰ƒO
+// cr[1:0] ï¿½É‰eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½O
 class RXCondition<bits<4> val> {
   bits<4> Value = val;
 }
@@ -159,31 +157,281 @@ def RXC_FINTV   : RXControl<11>;
 def RXC_INTB    : RXControl<12>;
 
 
-// –½—ßƒR[ƒh ‚Ì‚¤‚¿AŒÅ’è’l‚Å‘Î‰‚µ‚Ä‚¢‚é–½—ß‚ğ’è‹`
+// gdb ï¿½ï¿½ rx-decode.c ï¿½ï¿½ RXï¿½tï¿½@ï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½Yï¿½}ï¿½jï¿½ï¿½ï¿½Aï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ßƒRï¿½[ï¿½h ï¿½Ì‚ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½8bitï¿½lï¿½Å‘Î‰ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é–½ï¿½ß‚ï¿½ï¿½`
 class RXOpcode<bits<8> val> {
   bits<8> Value = val;
 }
-def OPC_BRK      : RXOpcode<0b00000000>;
-def OPC_NOP      : RXOpcode<0b00000011>;
-def OPC_RTS      : RXOpcode<0b00000010>;
+def OPC_BRK            : RXOpcode<0b00000000>;
+def OPC_DBT            : RXOpcode<0b00000001>;
+def OPC_NOP            : RXOpcode<0b00000011>;
+def OPC_RTS            : RXOpcode<0b00000010>;
+def OPC_BSAA           : RXOpcode<0b00000100>;
+def OPC_BSRA           : RXOpcode<0b00000101>;
+def OPC_NOTUB          : RXOpcode<0b00000110>;  // not UBï¿½n?(add/and/cmp/div/divu/emul/emulu/itof/max/min/mul/or/sub/tst/xchg/xor) - 400ï¿½s-3600ï¿½sï¿½Ü‚Å‚ï¿½ï¿½é‚½ï¿½ß‰ï¿½Í’ï¿½ï¿½ï¿½
+def OPC_BSRS           : RXOpcode<0b00000111>;
+def OPC_BRAS           : RXOpcode<0b00001000>;  // 0000 0 dsp : ï¿½ï¿½ï¿½ï¿½ 3bit ï¿½ï¿½ dsp ï¿½Æ‚ï¿½ï¿½Ä‘Î‰ï¿½(8-f)
+def OPC_BCndS          : RXOpcode<0b00011111>;  // 0001 n dsp : ï¿½ï¿½ï¿½ï¿½ 3bit ï¿½ï¿½ dsp ï¿½Æ‚ï¿½ï¿½Ä‘Î‰ï¿½(10-1f)
+def OPC_BRAB           : RXOpcode<0b00101110>;  // bra.b
+def OPC_BCndB          : RXOpcode<0b00101111>;  // 0001 n dsp : ï¿½ï¿½ï¿½ï¿½ 3bit ï¿½ï¿½ dsp ï¿½Æ‚ï¿½ï¿½Ä‘Î‰ï¿½(20-2f)
+def OPC_BRAW           : RXOpcode<0b00111000>;  // bra.w
+def OPC_BSRW           : RXOpcode<0b00111001>;  // bsr.w
+def OPC_BCndW_C0       : RXOpcode<0b00111010>;  // 0011 101c
+def OPC_BCndW_C1       : RXOpcode<0b00111011>;  // 0011 101c
+def OPC_MOV4B          : RXOpcode<0b00111100>;  // 0011 11sz d dst sppp, sz(0b00-0b10)
+def OPC_MOV4W          : RXOpcode<0b00111101>;  // 0x3d
+def OPC_MOV4L          : RXOpcode<0b00111110>;  // 0x3e
+def OPC_RRSD2          : RXOpcode<0b00111111>;  // 0011 1111 rega regb      rtsd    #%1, %2-%0
+def OPC_SUB2_UB        : RXOpcode<0b01000000>;  // 0100 00ss rsrc rdst      sub %2%S2, %1
+def OPC_SUB2_UB_DSP8   : RXOpcode<0b01000001>;  // dsp8
+def OPC_SUB2_UB_DSP16  : RXOpcode<0b01000010>;  // dsp16
+def OPC_CMP2_IMM32     : RXOpcode<0b01000100>;  // 0100 01ss rsrc rdst      cmp %2%S2, %1
+def OPC_CMP2_SIMM8     : RXOpcode<0b01000101>;
+def OPC_CMP2_SIMM16    : RXOpcode<0b01000110>;
+def OPC_CMP2_SIMM24    : RXOpcode<0b01000111>;
+def OPC_ADD2_UB        : RXOpcode<0b01001000>;  // 0100 10ss rsrc rdst      add %1%S1, %0
+def OPC_ADD2_UB_DSP8   : RXOpcode<0b01001001>;  // 
+def OPC_ADD2_UB_DSP16  : RXOpcode<0b01001010>;  // 
+def OPC_MUL2_IMM32     : RXOpcode<0b01001100>;  // 0100 11ss rsrc rdst      mul %1%S1, %0
+def OPC_MUL2_SIMM8     : RXOpcode<0b01001101>;
+def OPC_MUL2_SIMM16    : RXOpcode<0b01001110>;
+def OPC_MUL2_SIMM24    : RXOpcode<0b01001111>;
+def OPC_AND2_IMM32     : RXOpcode<0b01010000>;  // 0101 00ss rsrc rdst      and %1%S1, %0
+def OPC_AND2_SIMM8     : RXOpcode<0b01010001>;
+def OPC_AND2_SIMM16    : RXOpcode<0b01010010>;
+def OPC_AND2_SIMM24    : RXOpcode<0b01010011>;
+def OPC_OR3            : RXOpcode<0b01010100>;  // 0101 01ss rsrc rdst      or  %1%S1, %0
+def OPC_OR3_DSP8       : RXOpcode<0b01010101>;
+def OPC_OR3_DSP16      : RXOpcode<0b01010110>;
+def OPC_OR3_MOVU2_0    : RXOpcode<0b01011000>;  // 0101 1 s ss rsrc rdst	movu%s	%1, %0
+def OPC_OR3_MOVU2_1    : RXOpcode<0b01011001>;
+def OPC_OR3_MOVU2_2    : RXOpcode<0b01011010>;
+def OPC_OR3_MOVU2_3    : RXOpcode<0b01011011>;
+def OPC_OR3_MOVU2_W_0  : RXOpcode<0b01011100>;  // 0101 1 s ss rsrc rdst	movu%s	%1, %0
+def OPC_OR3_MOVU2_W_1  : RXOpcode<0b01011101>;
+def OPC_OR3_MOVU2_W_2  : RXOpcode<0b01011110>;
+def OPC_OR3_MOVU2_W_3  : RXOpcode<0b01011111>;
+def OPC_SUB1           : RXOpcode<0b01100000>;  // 0110 0000 immm rdst	sub	#%2, %0
+def OPC_CMP1           : RXOpcode<0b01100001>;  // 0110 0001 immm rdst	cmp	#%2, %1
+def OPC_ADD1           : RXOpcode<0b01100010>;  // 0110 0010 immm rdst	add	#%1, %0
+def OPC_MUL1           : RXOpcode<0b01100011>;  // 0110 0011 immm rdst	mul	#%1, %0
+def OPC_AND1           : RXOpcode<0b01100100>;  // 0110 0100 immm rdst	and	#%1, %0
+def OPC_OR1            : RXOpcode<0b01100101>;  // 0110 0101 immm rdst	or	#%1, %0
+def OPC_MOV1           : RXOpcode<0b01100110>;  // 0110 0110 immm rdst	mov%s	#%1, %0
+def OPC_RTSD1          : RXOpcode<0b01100111>;  // 0110 0111 rtsd	#%1
+def OPC_SHLR1          : RXOpcode<0b01101000>;  // 0110 100i mmmm rdst	shlr	#%2, %0
+def OPC_SHAR1          : RXOpcode<0b01101010>;  // 0110 101i mmmm rdst	shar	#%2, %0
+def OPC_SHLL1          : RXOpcode<0b01101100>;  // 0110 110i mmmm rdst	shll	#%2, %0
+def OPC_PUSHM          : RXOpcode<0b01101110>;  // 0110 1110 dsta dstb	pushm	%1-%2
+def OPC_POPM           : RXOpcode<0b01101111>;  // 0110 1111 dsta dstb	popm	%1-%2
+def OPC_ADD3_IMM32     : RXOpcode<0b01110000>;  // 0111 00im rsrc rdst	add	#%1, %2, %0
+def OPC_ADD3_SIMM8     : RXOpcode<0b01110001>;
+def OPC_ADD3_SIMM16    : RXOpcode<0b01110010>;
+def OPC_ADD3_SIMM24    : RXOpcode<0b01110011>;
+def OPC_CMP3_IMM32     : RXOpcode<0b01110100>;  // 0111 01im 0000 rsrc	cmp	#%2, %1%S1
+def OPC_CMP3_SIMM8     : RXOpcode<0b01110101>;
+def OPC_CMP3_SIMM16    : RXOpcode<0b01110110>;
+def OPC_CMP3_SIMM24    : RXOpcode<0b01110111>;
+def OPC_BSET3          : RXOpcode<0b01110110>;  // 0111 100i mmmm rdst	bset	#%1, %0
+def OPC_BCLR3          : RXOpcode<0b01111010>;  // 0111 101i mmmm rdst	bclr	#%1, %0
+def OPC_BTST3          : RXOpcode<0b01111100>;  // 0111 110i mmmm rdst	btst	#%2, %1
+def OPC_MOV1_B         : RXOpcode<0b10000000>;  // 10sz 0dsp a dst b src	mov%s	%1, %0
+def OPC_MOV1_W         : RXOpcode<0b10010000>;
+def OPC_MOV1_L         : RXOpcode<0b10100000>;
+def OPC_MOV2_B         : RXOpcode<0b10001000>;  // 10sz 1dsp a src b dst	mov%s	%1, %0
+def OPC_MOV2_W         : RXOpcode<0b10011000>;
+def OPC_MOV2_L         : RXOpcode<0b10101000>;
+def OPC_movu           : RXOpcode<0b10110000>;  // 1011 wdsp asrc bdst	movu%s	%1, %0
+def OPC_mov5           : RXOpcode<0b11000000>;  // 11sz sdss rsrc rdst	mov%s	%1, %0
+def OPC_mov6           : RXOpcode<0b11111000>;  // 1111 10sd rdst imsz	mov%s	#%1, %0
 
-class RXOpcode2<bits<16> val> {
-  bits<16> Value = val;
+
+
+// ï¿½ï¿½ï¿½ßƒRï¿½[ï¿½h ï¿½Ì‚ï¿½ï¿½ï¿½ï¿½A16 bitï¿½lï¿½Å‘Î‰ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é–½ï¿½ß‚ï¿½ï¿½`
+// switch (op[1] & 0xff) ï¿½ï¿½ï¿½Ü‚ï¿½
+class RXOpcode2<bits<8> val1, bits<8> val2, bits<8> mask2> {
+  bits<8> Value1 = val1;
+  bits<8> Value2 = val2;
+  bits<8> Mask2 = mask2;
 }
-def OPC_RTE       : RXOpcode2<0b0111111110010101>;
-def OPC_RTFI      : RXOpcode2<0b0111111110010100>;
-def OPC_SATR      : RXOpcode2<0b0111111110010011>;
-def OPC_SCMPU     : RXOpcode2<0b0111111110000011>;
-def OPC_SMOVB     : RXOpcode2<0b0111111110001011>;
-def OPC_SMOVF     : RXOpcode2<0b0111111110001111>;
-def OPC_SMOVU     : RXOpcode2<0b0111111110000111>;
-def OPC_WAIT      : RXOpcode2<0b0000001100000011>;
+def OPC_RTE       : RXOpcode2<0b01111111, 0b10010101, 0b11111111>;
+def OPC_RTFI      : RXOpcode2<0b01111111, 0b10010100, 0b11111111>;
+def OPC_SATR      : RXOpcode2<0b01111111, 0b10010011, 0b11111111>;
+def OPC_SCMPU     : RXOpcode2<0b01111111, 0b10000011, 0b11111111>;
+def OPC_SMOVB     : RXOpcode2<0b01111111, 0b10001011, 0b11111111>;
+def OPC_SMOVF     : RXOpcode2<0b01111111, 0b10001111, 0b11111111>;
+def OPC_SMOVU     : RXOpcode2<0b01111111, 0b10000111, 0b11111111>;
+def OPC_WAIT      : RXOpcode2<0b00000011, 0b00000011, 0b11111111>;
+def OPC_mov       : RXOpcode2<0b00000011, 0b00000011, 0b11111111>; // 0111 0101 0100 rdst	mov%s	#%1, %0
+// def OPC_X76		// 0x76 : etc
+// def OPC_x77		// 0x00/0x10/0x20/0x30
+
+def OPC_NOT1      : RXOpcode2<0b01111110, 0b00000000, 0b11110000>;  // 0111 1110 0000 rdst	not	%0
+def OPC_NEG1      : RXOpcode2<0b01111110, 0b00010000, 0b11110000>;  // 0111 1110 0001 rdst	neg	%0
+def OPC_ABS1      : RXOpcode2<0b01111110, 0b00100000, 0b11110000>;  // 0111 1110 0010 rdst	abs	%0
+def OPC_SAT1      : RXOpcode2<0b01111110, 0b00110000, 0b11110000>;  // 0111 1110 0011 rdst	sat	%0
+def OPC_RORC1     : RXOpcode2<0b01111110, 0b01000000, 0b11110000>;  // 0111 1110 0100 rdst	rorc	%0
+def OPC_ROLC1     : RXOpcode2<0b01111110, 0b01010000, 0b11110000>;  // 0111 1110 0101 rdst	rolc	%0
+def OPC_PUSH1     : RXOpcode2<0b01111110, 0b10000000, 0b11000000>;  // 0111 1110 10sz rsrc	push%s %1
+
+def OPC_POP       : RXOpcode2<0b01111110, 0b10110000, 0b11110000>;  // 0111 1110 1011 rdst	pop	%0
+def OPC_PUSH2     : RXOpcode2<0b01111110, 0b11000000, 0b11100000>;  // 0111 1110 110c rsrc	pushc	%1
+def OPC_POPC      : RXOpcode2<0b01111110, 0b11100000, 0b11100000>;  // 0111 1110 111c rdst	popc	%0
+def OPC_JMP       : RXOpcode2<0b01111111, 0b00000000, 0b11110000>;  // 0111 1111 0000 rsrc	jmp	%0
+def OPC_JSR       : RXOpcode2<0b01111111, 0b00010000, 0b11110000>;  // 0111 1111 0001 rsrc	jsr	%0
+def OPC_BRAL      : RXOpcode2<0b01111111, 0b01000000, 0b11110000>;  // 0111 1111 0100 rsrc	bra.l	%0
+def OPC_BSRL      : RXOpcode2<0b01111111, 0b01010000, 0b11110000>;  // 0111 1111 0101 rsrc	bsr.l	%0
+def OPC_SUNTIL    : RXOpcode2<0b01111111, 0b10000000, 0b11111100>;  // 0111 1111 1000 00sz	suntil%s
+def OPC_SSTR      : RXOpcode2<0b01111111, 0b10001000, 0b11111100>;  // 0111 1111 1000 10sz	sstr
+def OPC_RMPA      : RXOpcode2<0b01111111, 0b10001100, 0b11111100>;  // 0111 1111 1000 11sz	rmpa%s
+def OPC_SETPSW    : RXOpcode2<0b01111111, 0b10100000, 0b11110000>;  // 0111 1111 1010 rdst	setpsw	%0
+def OPC_CLRPSW    : RXOpcode2<0b01111111, 0b10110000, 0b11110000>;  // 0111 1111 1011 rdst	clrpsw	%0
+def OPC_BSET      : RXOpcode2<0b11110000, 0b10110000, 0b11110000>;  // 1111 00sd rdst 0bit	bset	#%1, %0%S0
+def OPC_BCLR      : RXOpcode2<0b11110000, 0b10110000, 0b11110000>;  // 1111 00sd rdst 1bit	bclr	#%1, %0%S0
+def OPC_BTST      : RXOpcode2<0b11110100, 0b10110000, 0b11110000>;  // 1111 01sd rdst 0bit	btst	#%2, %1%S1
+def OPC_PUSH3     : RXOpcode2<0b11110100, 0b10110000, 0b11110000>;  // 1111 01ss rsrc 10sz	push%s	%1
+
+// 1111 1100 0000 0011 rsrc rdst	sbb	%1, %0
+// 1111 1100 0000 0111 rsrc rdst	neg	%2, %0
+// 1111 1100 0000 1011 rsrc rdst	adc	%1, %0
+// 1111 1100 0000 1111 rsrc rdst	abs	%1, %0
+// 1111 1100 0001 00ss rsrc rdst	max	%1%S1, %0
+// 1111 1100 0001 01ss rsrc rdst	min	%1%S1, %0
+// 1111 1100 0001 10ss rsrc rdst	emul	%1%S1, %0
+// 1111 1100 0001 11ss rsrc rdst	emulu	%1%S1, %0
+// 1111 1100 0010 00ss rsrc rdst	div	%1%S1, %0
+// 1111 1100 0010 01ss rsrc rdst	divu	%1%S1, %0
+// 1111 1100 0011 00ss rsrc rdst	tst	%1%S1, %2
+// 1111 1100 0011 01ss rsrc rdst	xor	%1%S1, %0
+// 1111 1100 0011 1011 rsrc rdst	not	%1, %0
+// 1111 1100 0100 00ss rsrc rdst	xchg	%1%S1, %0
+// 1111 1100 0100 01sd rsrc rdst	itof	%1%S1, %0
+// 1111 1100 0100 1011 rsrc rdst	stz	%1, %0
+// 1111 1100 0100 1111 rsrc rdst	stnz	%1, %0
+// 1111 1100 0101 01sd rsrc rdst	utof	%1%S1, %0
+// 1111 1100 0101 1010 rsrc rdst	bfmovz	%bf 
+// 1111 1100 0101 1110 rsrc rdst	bfmov	%bf
+// 1111 1100 0110 00sd rdst rsrc	bset	%1, %0%S0
+// 1111 1100 0110 01sd rdst rsrc	bclr	%1, %0%S0
+// 1111 1100 0110 10sd rdst rsrc	btst	%2, %1%S1
+// 1111 1100 0110 11sd rdst rsrc	bnot	%1, %0%S0
+// 1111 1100 0111 10sz rdst 1000	dmov.d	%1, %0
+// 1111 1100 1000 00sd rsrc rdst	fsub	%1%S1, %0
+// 1111 1100 1000 01sd rsrc rdst	fcmp	%1%S1, %0
+// 1111 1100 1000 10sd rsrc rdst	fadd	%1%S1, %0
+// 1111 1100 1000 11sd rsrc rdst	fmul	%1%S1, %0
+// 1111 1100 1001 00sd rsrc rdst	fdiv	%1%S1, %0
+// 1111 1100 1001 01sd rsrc rdst	ftoi	%1%S1, %0
+// 1111 1100 1001 10sd rsrc rdst	round	%1%S1, %0
+// 1111 1100 1010 00sd rsrc rdst	fsqrt	%1%S1, %0
+// 1111 1100 1010 01sd rsrc rdst	ftou	%1%S1, %0
+// 1111 1100 1100 10sz rsrc 1000	dmov.d	%1, %0
+// 1111 1100 1101 sz sd rdst cond	sc%1%s	%0
+
+// ï¿½ï¿½ï¿½ßƒRï¿½[ï¿½h ï¿½Ì‚ï¿½ï¿½ï¿½ï¿½A24 bitï¿½lï¿½Å‘Î‰ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é–½ï¿½ß‚ï¿½ï¿½`
+class RXOpcode3<bits<8> val1, bits<8> val2, bits<8> val3> {
+  bits<8> Value1 = val1;
+  bits<8> Value2 = val2;
+  bits<8> Value3 = val3;
+}
+// 0xf9
+// 1111 1001 0000 0011 rdst 0000 dmov.l	#%1, %0
+// 1111 1001 0000 0011 rdst 001s dmov%s	#%1, %0
+
+// 1111 1100 111bit sd rdst cond	bm%2	#%1, %0%S0
+// 1111 1100 111bit sd rdst 1111	bnot	#%1, %0%S0
+
+// 1111 1101 0000 a000 srca srcb	mulhi	%1, %2, %0
+// 1111 1101 0000 a001 srca srcb	mullo	%1, %2, %0
+// 1111 1101 0000 a010 srca srcb	mullh	%1, %2, %0
+// 1111 1101 0000 a011 srca srcb 	emula	%1, %2, %0
+// 1111 1101 0000 a100 srca srcb	machi	%1, %2, %0
+// 1111 1101 0000 a101 srca srcb	maclo	%1, %2, %0
+// 1111 1101 0000 a110 srca srcb	maclh	%1, %2, %0
+// 1111 1101 0000 a111 srca srcb 	emaca	%1, %2, %0
+// 1111 1101 0001 0111 a000 rsrc	mvtachi	%1, %0
+// 1111 1101 0001 0111 a001 rsrc	mvtaclo	%1, %0
+// 1111 1101 0001 0111 a011 rdst	mvtacgu	%0, %1
+// 1111 1101 0001 1000 a00i 0000	racw	#%1, %0
+// 1111 1101 0001 1000 a10i 0000	rdacw	#%1, %0
+// 1111 1101 0001 1001 a00i 0000	racl	#%1, %0
+// 1111 1101 0001 1001 a10i 0000	rdacl	#%1, %0
+// 1111 1101 0001 111i a m01 rdst	mvfaclo	#%2, %1, %0
+// 1111 1101 0001 111i a m11 rdst	mvfacgu	#%2, %1, %0
+// 1111 1101 0010 0p sz rdst rsrc	mov%s	%1, %0
+// 1111 1101 0010 0111 rdst rsrc	movco	%1, [%0]
+// 1111 1101 0010 1p sz rsrc rdst	mov%s	%1, %0
+// 1111 1101 0010 1111 rsrc rdst	movli	[%1], %0
+// 1111 1101 0011 1p sz rsrc rdst	movu%s	%1, %0
+// 1111 1101 0100 a100 srca srcb	msbhi	%1, %2, %0
+// 1111 1101 0100 a101 srca srcb	msblo	%1, %2, %0
+// 1111 1101 0100 a110 srca srcb	msblh	%1, %2, %0
+// 1111 1101 0100 a111 srca srcb 	emsba	%1, %2, %0
+// 1111 1101 0110 0000 rsrc rdst	shlr	%2, %0
+// 1111 1101 0110 0001 rsrc rdst	shar	%2, %0
+// 1111 1101 0110 0010 rsrc rdst	shll	%2, %0
+// 1111 1101 0110 0100 rsrc rdst	rotr	%1, %0
+// 1111 1101 0110 0101 rsrc rdst	revw	%1, %0
+// 1111 1101 0110 0110 rsrc rdst	rotl	%1, %0
+// 1111 1101 0110 0111 rsrc rdst	revl	%1, %0
+
+// 1111 1101 0110 100c rsrc rdst	mvtc	%1, %0
+// 1111 1101 0110 101s rsrc rdst	mvfc	%1, %0
+// 1111 1101 0110 110i mmmm rdst	rotr	#%1, %0
+// 1111 1101 0110 111i mmmm rdst	rotl	#%1, %0
+// 1111 1101 0111 im00 0010rdst	adc	#%1, %0
+// 1111 1101 0111 im00 0100rdst	max	#%1, %0
+// 1111 1101 0111 im00 0101rdst	min	#%1, %0
+// 1111 1101 0111 im00 0110rdst	emul	#%1, %0
+// 1111 1101 0111 im00 0111rdst	emulu	#%1, %0
+// 1111 1101 0111 im00 1000rdst	div	#%1, %0
+// 1111 1101 0111 im00 1001rdst	divu	#%1, %0
+// 1111 1101 0111 im00 1100rdst	tst	#%1, %2
+// 1111 1101 0111 im00 1101rdst	xor	#%1, %0
+// 1111 1101 0111 im00 1110rdst	stz	#%1, %0
+// 1111 1101 0111 im00 1111rdst	stnz	#%1, %0
+// 1111 1101 0111 0010 0000 rdst	fsub	#%1, %0
+// 1111 1101 0111 0010 0001 rdst	fcmp	#%1, %0
+// 1111 1101 0111 0010 0010 rdst	fadd	#%1, %0
+// 1111 1101 0111 0010 0011 rdst	fmul	#%1, %0
+// 1111 1101 0111 0010 0100 rdst	fdiv	#%1, %0
+// 1111 1101 0111 im11 000crdst	mvtc	#%1, %0
+// 1111 1101 0111 0101 1000 rdst rsrc 0000	dmov.l	%1, %0
+// 1111 1101 0111 0101 1000 rdst rsrc 0010	dmov.l	%1, %0
+// 1111 1101 0111 0101 1000 rdst rsrc 0100	mvfdc	%1, %0
+// 1111 1101 0111 0110 1100 rsrc 0000 0000 	save	%1
+// 1111 1101 0111 0110 1101 rsrc 0000 0000 	rstr	%1
+// 1111 1101 0111 0110 1110 0000	save	#%1
+// 1111 1101 0111 0110 1111 0000 	rstr	#%1
+// 1111 1101 0111 0111 1000 rsrc rdst 0000	dmov.l	%1, %0
+// 1111 1101 0111 0111 1000 rsrc rdst 001s	dmov%s	%1, %0
+// 1111 1101 0111 0111 1000 rdst rsrc 0100	mvtdc	%1, %0
+// 1111 1101 0111 0111 1000 rsrc rdst 1001	itod	%1, %0
+// 1111 1101 0111 0111 1000 rsrc rdst 1010	ftod	%1, %0
+// 1111 1101 0111 0111 1000 rsrc rdst 1101	utod	%1, %0
+// 1111 1101 100immmm rsrc rdst	shlr	#%2, %1, %0
+// 1111 1101 101immmm rsrc rdst	shar	#%2, %1, %0
+// 1111 1101 110immmm rsrc rdst	shll	#%2, %1, %0
+// 1111 1101 111 bittt cond rdst	bm%2	#%1, %0%S0
+// 1111 1101 111bittt 1111 rdst	bnot	#%1, %0
+// 1111 1110 00sz isrc bsrc rdst	mov%s	%0, [%1, %2]
+// 1111 1110 01sz isrc bsrc rdst	mov%s	[%1, %2], %0
+// 1111 1110 11sz isrc bsrc rdst	movu%s	[%1, %2], %0
+// 1111 1111 0000 rdst srca srcb	sub	%2, %1, %0
+// 1111 1111 0010 rdst srca srcb	add	%2, %1, %0
+// 1111 1111 0011 rdst srca srcb	mul 	%2, %1, %0
+// 1111 1111 0100 rdst srca srcb	and	%2, %1, %0
+// 1111 1111 0101 rdst srca srcb	or	%2, %1, %0
+// 1111 1111 0110 rdst srca srcb	xor	%2, %1, %0
+// 1111 1111 1000 rdst srca srcb	fsub	%2, %1, %0
+// 1111 1111 1010 rdst srca srcb	fadd	%2, %1, %0
+// 1111 1111 1011 rdst srca srcb	fmul	%2, %1, %0
 
 
 // http://msyksphinz.hatenablog.com/entry/2019/01/23/040000
-// P167 ‚©‚ç‚Ì–½—ßƒR[ƒh‚Ì‘Î‰‚ª“ü‚é?(–½—ßƒR[ƒh‚ª‰Â•Ï[CISC]‚Ì‚½‚ß’ˆÓBX86 ‚Ì’è‹`‚ğŒ©‚é?)
+// P167 ï¿½ï¿½ï¿½ï¿½Ì–ï¿½ï¿½ßƒRï¿½[ï¿½hï¿½Ì‘Î‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?(ï¿½ï¿½ï¿½ßƒRï¿½[ï¿½hï¿½ï¿½ï¿½Â•ï¿½[CISC]ï¿½Ì‚ï¿½ï¿½ß’ï¿½ï¿½ÓBX86 ï¿½Ì’ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?)
 // https://www.renesas.com/jp/ja/doc/products/mpumcu/doc/rx_family/r01us0032jj0120_rxsm.pdf
-// Base –½—ß?
+// Base ï¿½ï¿½ï¿½ï¿½?
 // Generic RX Format
 class RXInst<InstFormat format, dag outs, dag ins, string opcodestr, string argstr, list<dag> pattern>
     : Instruction {
@@ -212,7 +460,7 @@ class Pseudo<dag outs, dag ins, list<dag> pattern, string opcodestr = "", string
   let isCodeGenOnly = 1;
 }
 
-// ŒÅ’è–½—ß’·ƒR[ƒh(1byte)
+// ï¿½Å’è–½ï¿½ß’ï¿½ï¿½Rï¿½[ï¿½h(1byte)
 // BRK, NOP, RTS
 class I<RXOpcode opcode, dag outs, dag ins, string opcodestr, string argstr, list<dag> pattern>
   : RXInst<InstFormatRawFrm, outs, ins, opcodestr, argstr, pattern> {
@@ -222,14 +470,15 @@ class I<RXOpcode opcode, dag outs, dag ins, string opcodestr, string argstr, lis
   let Inst = opcode.Value;
 }
 
-// ŒÅ’è–½—ß’·ƒR[ƒh(2byte)
+// ï¿½Å’è–½ï¿½ß’ï¿½ï¿½Rï¿½[ï¿½h(2byte)
 // RTE, RTFI, SATR, SCMPU, SMOVF, SMOVU, WAIT
 class I2<RXOpcode2 opcode, dag outs, dag ins, string opcodestr, string argstr, list<dag> pattern>
   : RXInst<InstFormatRawFrm, outs, ins, opcodestr, argstr, pattern> {
   field bits<16> Inst;
   let Size = 2;
 
-  let Inst = opcode.Value;
+  let Inst{15-8} = opcode.Value1;
+  let Inst{7-0} = opcode.Value2;
 }
 
 class I14<bits<14> o, SizeType sz, dag outs, dag ins, string opcodestr, string argstr, list<dag> pattern>
@@ -383,7 +632,7 @@ class RXInstRegisterDestSrcSrc12<bits<12> o, dag outs, dag ins, string opcodestr
 
 
 // InstFormatIndirect
-// ”Ä—pƒŒƒWƒXƒ^?
+// ï¿½Ä—pï¿½ï¿½ï¿½Wï¿½Xï¿½^?
 class RXInstIndirect12_6<bits<12> of, ImmType li, bits<6> oe, dag outs, dag ins, string opcodestr, string argstr, list<dag> pattern>
     : RXInst<InstFormatIndirect, outs, ins, opcodestr, argstr, pattern> {
   field bits<24> Inst; // 4-7(src 1-4)
@@ -539,7 +788,7 @@ class RXInstIndirectDestSrc11_4<bits<11> of, bits<4> oe, dag outs, dag ins, stri
 }
 
 
-// §ŒäƒŒƒWƒXƒ^
+// ï¿½ï¿½ï¿½äƒŒï¿½Wï¿½Xï¿½^
 class RXInstIndirectCR12_6<bits<12> of, ImmType li, bits<6> oe, RXControl cr, dag outs, dag ins, string opcodestr, string argstr, list<dag> pattern>
     : RXInst<InstFormatIndirect, outs, ins, opcodestr, argstr, pattern> {
   field bits<24> Inst;
